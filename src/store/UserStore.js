@@ -1,4 +1,3 @@
-import { getSuggestedQuery } from "@testing-library/react"
 import { makeAutoObservable } from "mobx"
 
 export default class UserStore {
