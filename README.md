@@ -1,3 +1,5 @@
+Before starting add .env file with this code: REACT_APP_API_URL="http://localhost:5000/" or another IP of your server-side app.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
