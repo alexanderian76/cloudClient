@@ -32,8 +32,10 @@ export const uploadFile = async (files, path) => {
     }
     
 
-    
-    const {data} = await $authHost.post('api/user/upload?path=' + path, formData)
+    const config = {
+        onUploadProgress: progressEvent => console.log(progressEvent.loaded)
+    }
+    const {data} = await $authHost.post('api/user/upload?path=' + path, formData, config)
     //localStorage.setItem('token', data.token)
     return data;
     //return jwt_decode(data.token)

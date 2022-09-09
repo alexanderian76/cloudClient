@@ -4,6 +4,8 @@ import { Container, Button, Form, Card, CardGroup, Row, Col } from "react-bootst
 import { Context } from "../index";
 import {createDir, getDirs, getFiles, loadFile, removeDir, uploadFile} from "../http/userAPI"
 import { observer } from "mobx-react-lite";
+import { $authHost } from "../http";
+import { wait } from "@testing-library/user-event/dist/utils";
 
 function AdminComp() {
  // const {directory} = useContext(Context)
@@ -11,6 +13,7 @@ function AdminComp() {
   const [files, setFiles] = useState('')
   const [filesDownloaded, setFilesDownloaded] = useState('')
   const [dir, setDir] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   
 
   const [directory, setDirectoryState] = useState('/uploads/')
@@ -27,10 +30,16 @@ function AdminComp() {
   const [dirs, setDirs] = useState('')
   
 
-  function UploadFiles(files, path) {
+  async function UploadFiles(files, path) {
+    setIsLoading(true)
     console.log(path)
-    uploadFile(files, path)
+   // const sleep = ms => new Promise(r => setTimeout(r, ms));
+   // await sleep(3000)
+    await uploadFile(files, path)
+    
     setDirectory(directory)
+    setIsLoading(false)
+    console.log("LOADED")
   }
 
   async function GetFiles(dirName) {
@@ -98,7 +107,12 @@ function AdminComp() {
   }, [filesDownloaded])
 
   return (
+    <>
+    <div>{ isLoading ? 
+        <div style={{width : window.innerWidth, height: window.innerHeight, position: "absolute", backgroundColor: 'gray', display: 'flex'}}><span className="loader"></span></div> : ""
+      }</div>
     <Container className="" >
+      
       <header>{directory}</header>
       <div style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}><Button style={{marginTop: 10}} className="" variant='outline-success' onClick={() => {
         let tmpDir = directory.split('/')
@@ -151,6 +165,7 @@ function AdminComp() {
 
           
     </Container>
+    </>
   );
 }
 
