@@ -93,18 +93,18 @@ export const loadFile = async (fileName) => {
             
             a.setAttribute('style', 'text-align: center;')
             let myImage = new Image();
-            myImage.src = 'http://192.168.1.74:5000/api/user/load?token=' + blob;
+            myImage.src = process.env.REACT_APP_API_URL + 'api/user/load?token=' + blob;
             myImage.setAttribute('style', 'width: 70px; height: 70px; object-fit: cover; cursor: pointer;')
             myImage.setAttribute('download', fileName)
             a.appendChild(myImage)
            /* */
         }
         else {
-            a.setAttribute('style', 'cursor: pointer; text-align: center; color: blueviolet')
+            a.setAttribute('style', 'cursor: pointer; text-align: center; color: blueviolet; height: 100%;')
             a.innerHTML = 'Load file'
         }
        a.onclick = () => {
-        window.open('http://192.168.1.74:5000/api/user/load?token=' + blob, '_blank')
+        window.open(process.env.REACT_APP_API_URL + 'api/user/load?token=' + blob, '_blank')
        }
        // a.setAttribute('href', 'http://localhost:5000/api/user/load?token=' + blob)
        // a.setAttribute('download', fileName)

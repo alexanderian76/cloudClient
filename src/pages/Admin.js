@@ -1,6 +1,6 @@
 import { set } from "mobx";
-import React, { useContext, useEffect, useState } from "react";
-import { Container, Button, Form, Card, CardGroup, Row, Col } from "react-bootstrap";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { Container, Button, Form, Card, CardGroup, Row, Col, Alert } from "react-bootstrap";
 import { Context } from "../index";
 import {createDir, getDirs, getFiles, loadFile, removeDir, uploadFile} from "../http/userAPI"
 import { observer } from "mobx-react-lite";
@@ -14,16 +14,15 @@ function AdminComp() {
   const [filesDownloaded, setFilesDownloaded] = useState('')
   const [dir, setDir] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  
+  const [isFirstLoad, setIsFirstLoad] = useState(true)
 
   const [directory, setDirectoryState] = useState('/uploads/')
 
-  function setDirectory(dirName) {
+  async function setDirectory(dirName) {
     localStorage.setItem('directory', dirName)
     setDirectoryState(dirName)
-    GetDirs(localStorage.getItem('directory'))
-    GetFiles(localStorage.getItem('directory'))
-    
+    await GetDirs(localStorage.getItem('directory'))
+    await GetFiles(localStorage.getItem('directory'))
   }
   
 
@@ -83,27 +82,29 @@ function AdminComp() {
   function RemoveDir(dirName) {
     removeDir(dirName).then(() => {
       console.log('123')
-      setDirectory(directory)
+      //setDirectory(directory)
+	  GetDirs(directory)
      })
   }
 
   useEffect(() =>{
     //setDirectory(directory)
+    
     for(let i = 0; i < filesDownloaded.length; i++) {
       loadFile(directory + filesDownloaded[i])
       console.log(directory + filesDownloaded[i])
     };
-    
-    if(localStorage.getItem('directory')){
-        setDirectory(localStorage.getItem('directory'))
-        
-    }
-    else {
-      GetDirs(directory)
-      GetFiles(directory)
-      
-    }
-    
+    if(isFirstLoad) {
+		if(localStorage.getItem('directory')){
+			setDirectory(localStorage.getItem('directory'))
+		}
+		else {
+		GetDirs(directory)
+		GetFiles(directory)
+		}
+		setIsFirstLoad(false)
+	}
+
   }, [filesDownloaded])
 
   return (
@@ -149,15 +150,32 @@ function AdminComp() {
             </Form>
             <Row xs={1} md={3} className="mt-2">{filesDownloaded == '' ? '' : filesDownloaded.map((file) => 
             
-            <Card key={file} className="mb-2"><div id={file} style={{cursor: '', color: 'green', backgroundColor: ''}} onClick={() => /*LoadFile(file)*/''}>{file}</div><a id={file + '_id'} style={{paddingLeft: 0}}>Load</a></Card>
+            	<Card key={file} className="m-2" style={{maxWidth: 300, height: 100, maxHeight: 100}}>
+					<div id={file} 
+						style={{cursor: '', color: 'green', backgroundColor: '', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', height: 50}} 
+						onClick={() => /*LoadFile(file)*/''}>
+							{file}
+					</div>
+					<a id={file + '_id'} style={{paddingLeft: 0}}>
+						Load
+					</a>
+				</Card>
             
             )}
             </Row>
           { /* <Button className="mt-2" variant='outline-success' onClick={GetFiles}>Download</Button>*/}
             
 
-            <div>{dirs == '' ? '' : dirs.map((d) => <div key={d.path} style={{display: 'flex'}}><div id={d.path} style={{cursor: 'pointer', color: 'blueviolet'}} onClick={() => {setDirectory(d.path);}}>{d.name}</div>
-            <a id={d.path + '_id'} style={{paddingLeft: 10, cursor: 'pointer', color: 'red'}} onClick={() => RemoveDir(d.path)}>Delete folder</a>
+            <div>{dirs == '' ? '' : dirs.map((d) => <div key={d.path} style={{display: 'flex'}}><div id={d.path} style={{cursor: 'pointer', color: 'blueviolet', backgroundColor: 'lightgrey', padding: 5, borderRadius: 5}} onClick={() => {setDirectory(d.path);}}>{d.name}</div>
+				<a id={d.path + '_id'}
+					style={{marginLeft: 30, cursor: 'pointer', color: 'red', backgroundColor: "pink", textAlign: 'center', borderRadius: 5, padding: 5}} 
+					onClick={() => {
+						let result = window.confirm('Delete folder?')
+						if(result)
+							RemoveDir(d.path)
+						}}>
+							Delete folder
+				</a>
             </div>)}
             </div>
           { /* <Button className="mt-2" variant='outline-success' onClick={() => GetDirs(directory)}>Get Dirs</Button> */}
