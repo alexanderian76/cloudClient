@@ -1,6 +1,6 @@
 import { set } from "mobx";
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { Container, Button, Form, Card, CardGroup, Row, Col, Alert } from "react-bootstrap";
+import { Container, Button, Form, Card, CardGroup, Row, Col, Alert, Table } from "react-bootstrap";
 import { Context } from "../index";
 import {createDir, getDirs, getFiles, loadFile, removeDir, uploadFile} from "../http/userAPI"
 import { observer } from "mobx-react-lite";
@@ -68,7 +68,8 @@ function AdminComp() {
     console.log(directory)
     let load = await createDir(dirName)
     //setDirectory(dirName + '/')
-    setDirectory(directory)
+    //setDirectory(directory)
+	GetDirs(directory)
   }
 
   async function GetDirs(dirName) {
@@ -166,18 +167,32 @@ function AdminComp() {
           { /* <Button className="mt-2" variant='outline-success' onClick={GetFiles}>Download</Button>*/}
             
 
-            <div>{dirs == '' ? '' : dirs.map((d) => <div key={d.path} style={{display: 'flex'}}><div id={d.path} style={{cursor: 'pointer', color: 'blueviolet', backgroundColor: 'lightgrey', padding: 5, borderRadius: 5}} onClick={() => {setDirectory(d.path);}}>{d.name}</div>
-				<a id={d.path + '_id'}
-					style={{marginLeft: 30, cursor: 'pointer', color: 'red', backgroundColor: "pink", textAlign: 'center', borderRadius: 5, padding: 5}} 
-					onClick={() => {
-						let result = window.confirm('Delete folder?')
-						if(result)
-							RemoveDir(d.path)
-						}}>
-							Delete folder
-				</a>
-            </div>)}
-            </div>
+            <table style={{width: '50%'}}><tr><th>Folder</th><th>Action</th></tr>{dirs == '' ? '' : dirs.map((d) => <tr key={d.path}>
+				<td id={d.path} 
+					style={{color: 'blueviolet', padding: 5, paddingLeft: 0}}>
+						<div 
+							style={{cursor: 'pointer', color: 'blueviolet', backgroundColor: 'lightgrey', padding: 5, borderRadius: 5}}
+							onClick={() => {setDirectory(d.path);}}
+						>
+							{d.name}
+						</div>
+				</td>
+				<td id={d.path + '_id'}
+					style={{ textAlign: 'center', alignItems: 'center', padding: 5}} 
+				>
+							<div 
+								style={{ cursor: 'pointer', color: 'red', backgroundColor: "pink", textAlign: 'center', borderRadius: 5, padding: 5}} 
+								onClick={() => {
+									let result = window.confirm('Delete folder?')
+									if(result)
+										RemoveDir(d.path)
+								}}
+							>
+								Delete folder
+							</div>
+				</td>
+            </tr>)}
+            </table>
           { /* <Button className="mt-2" variant='outline-success' onClick={() => GetDirs(directory)}>Get Dirs</Button> */}
     
 
