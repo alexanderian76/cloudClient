@@ -100,7 +100,8 @@ export const loadFile = async (fileName) => {
            /* */
         }
         else {
-            a.setAttribute('style', 'cursor: pointer; text-align: center; color: blueviolet; height: 100%;')
+            a.setAttribute('class', 'btn btn-success')
+            //a.setAttribute('style', 'cursor: pointer; text-align: center; color: blueviolet; height: 100%;')
             a.innerHTML = 'Load file'
         }
        a.onclick = () => {

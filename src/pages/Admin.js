@@ -6,6 +6,7 @@ import {createDir, getDirs, getFiles, loadFile, removeDir, uploadFile} from "../
 import { observer } from "mobx-react-lite";
 import { $authHost } from "../http";
 import { wait } from "@testing-library/user-event/dist/utils";
+import { getFileExtension } from "../utils/utils";
 
 function AdminComp() {
  // const {directory} = useContext(Context)
@@ -167,31 +168,36 @@ function AdminComp() {
           { /* <Button className="mt-2" variant='outline-success' onClick={GetFiles}>Download</Button>*/}
             
 
-            <table style={{width: '50%'}}><tr><th>Folder</th><th>Action</th></tr>{dirs == '' ? '' : dirs.map((d) => <tr key={d.path}>
-				<td id={d.path} 
+            <table style={{width: 400}}><tbody><tr><th>Folder</th><th>Action</th></tr>{dirs == '' ? '' : dirs.map((d) => <tr key={d}>
+				<td id={directory + d + "/"} 
 					style={{color: 'blueviolet', padding: 5, paddingLeft: 0}}>
 						<div 
-							style={{cursor: 'pointer', color: 'blueviolet', backgroundColor: 'lightgrey', padding: 5, borderRadius: 5}}
-							onClick={() => {setDirectory(d.path);}}
+							style={{width: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: "nowrap"}}
+							className="btn btn-info"
+							//style={{cursor: 'pointer', color: 'blueviolet', backgroundColor: 'lightgrey', padding: 5, borderRadius: 5}}
+							onClick={() => {setDirectory(directory + d + "/");}}
 						>
-							{d.name}
+							{d}
 						</div>
 				</td>
-				<td id={d.path + '_id'}
-					style={{ textAlign: 'center', alignItems: 'center', padding: 5}} 
+				<td id={d + '_id'}
+					style={{ textAlign: 'left', alignItems: 'center', padding: 5, paddingLeft: 0}} 
 				>
 							<div 
-								style={{ cursor: 'pointer', color: 'red', backgroundColor: "pink", textAlign: 'center', borderRadius: 5, padding: 5}} 
+              					className="btn btn-danger"
+								style={{display : (filesDownloaded != "" ? (filesDownloaded.filter(file => getFileExtension(file) == d).length > 0 ? "none" : '') : "")}}
+								//style={{ cursor: 'pointer', color: 'red', backgroundColor: "pink", textAlign: 'center', borderRadius: 5, padding: 5}} 
 								onClick={() => {
 									let result = window.confirm('Delete folder?')
 									if(result)
-										RemoveDir(d.path)
+										RemoveDir(directory + d + "/")
 								}}
 							>
 								Delete folder
 							</div>
 				</td>
             </tr>)}
+			</tbody>
             </table>
           { /* <Button className="mt-2" variant='outline-success' onClick={() => GetDirs(directory)}>Get Dirs</Button> */}
     
