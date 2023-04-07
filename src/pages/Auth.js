@@ -38,7 +38,6 @@ function AuthComp() {
     <Container className="d-flex justify-content-center align-items-center"
     style={{height: window.innerHeight - 54}}
     >
-      Auth
     <Card style={{width: 600}} className="p-5">
       <h2 className="m-auto">{isLogin ? "Authorization" : 'Registration'}</h2>
       <Form className="d-flex flex-column">

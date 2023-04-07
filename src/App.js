@@ -17,7 +17,7 @@ function AppComp() {
       
       let data = await check()
       
-      
+      console.log('check')
       console.log(data)
       user.setUser(data)
       user.setIsAuth(true)

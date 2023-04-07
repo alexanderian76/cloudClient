@@ -10,14 +10,14 @@ import { getFileExtension } from "../utils/utils";
 
 function AdminComp() {
  // const {directory} = useContext(Context)
-
+  const {user} = useContext(Context)
   const [files, setFiles] = useState('')
   const [filesDownloaded, setFilesDownloaded] = useState('')
   const [dir, setDir] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isFirstLoad, setIsFirstLoad] = useState(true)
 
-  const [directory, setDirectoryState] = useState('/uploads/')
+  const [directory, setDirectoryState] = useState('/' + user.User.email + '/')
 
   async function setDirectory(dirName) {
     localStorage.setItem('directory', dirName)
@@ -91,19 +91,20 @@ function AdminComp() {
 
   useEffect(() =>{
     //setDirectory(directory)
-    
+    console.log(user)
     for(let i = 0; i < filesDownloaded.length; i++) {
       loadFile(directory + filesDownloaded[i])
       console.log(directory + filesDownloaded[i])
     };
     if(isFirstLoad) {
-		if(localStorage.getItem('directory')){
+      setDirectory(directory)
+		/*if(localStorage.getItem('directory')){
 			setDirectory(localStorage.getItem('directory'))
 		}
 		else {
 		GetDirs(directory)
 		GetFiles(directory)
-		}
+		}*/
 		setIsFirstLoad(false)
 	}
 
@@ -115,9 +116,8 @@ function AdminComp() {
         <div style={{width : window.innerWidth, height: window.innerHeight, position: "absolute", backgroundColor: 'gray', display: 'flex'}}><span className="loader"></span></div> : ""
       }</div>
     <Container className="" >
-      
-      <header>{directory}</header>
-      <div style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap'}}><Button style={{marginTop: 10}} className="" variant='outline-success' onClick={() => {
+      <div style={{display: 'flex'}}>
+      <Button style={{marginTop: 5}} className="" variant='outline-success' onClick={() => {
         let tmpDir = directory.split('/')
         console.log(tmpDir)
         tmpDir.pop()
@@ -126,7 +126,15 @@ function AdminComp() {
        if(tmpDir.length > 1)
        setDirectory(tmpDir.join('/') + '/');
       }}>Back</Button>
-             <a style={{display: 'flex', marginTop: 10}}> <input id="dir_input" style={{marginLeft: 10, marginRight: 10, marginTop: 5}} onChange={e => setDir(e.target.value)}/>
+      <a id="label" style={{ fontSize: 20, border: 'solid', marginLeft: 5, borderWidth: 1, borderRadius: 5, padding: 5, paddingRight: 15, marginTop: 5, borderColor: "green", opacity: 0.8}}>Current directory: {directory}</a>
+      <Button id="log_out" style={{marginTop: 5, position: 'fixed', right: 10, top: 0}} className="" variant='outline-success' onClick={() => {
+        localStorage.setItem('token', null)
+        user.setUser(null)
+      user.setIsAuth(false)
+      }}>Log out</Button>
+      </div>
+      <div style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap', width: '100%'}}>
+             <a style={{display: 'flex', marginTop: 10, }}> <input id="dir_input" style={{marginLeft: 0, marginRight: 10, marginTop: 5}} onChange={e => setDir(e.target.value)}/>
             <Button style={{marginLeft: 10}} className="" variant='outline-success' onClick={() => {
               console.log('dir')
               console.log(dir)
@@ -135,7 +143,12 @@ function AdminComp() {
               document.getElementById('dir_input').value = ''
               setDir('')
               }}>Create Dir</Button>
+
+
             </a>
+            
+            
+      
             </div>
             
         <Form className="mt-3" onSubmit={ e => {e.preventDefault(); UploadFiles(files, directory); setFiles(""); document.getElementById('input_id').value = ""}} >
