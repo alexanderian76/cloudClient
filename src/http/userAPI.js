@@ -65,7 +65,8 @@ export const getDirs = async (dirName) => {
 
 export const loadFile = async (fileName) => {
 
-    let a = document.getElementById(fileName.split('/').pop() + '_id')
+    let file = fileName.split('/').pop()
+    let a = document.getElementById(file + '_id')
     a.innerHTML = ''
     fetch(process.env.REACT_APP_API_URL + 'api/user/load_file' + '?fileName=' + fileName, {
         method : 'GET',
@@ -99,11 +100,29 @@ export const loadFile = async (fileName) => {
             a.appendChild(myImage)
            /* */
         }
-        else {
-            a.setAttribute('class', 'btn btn-success')
-            //a.setAttribute('style', 'cursor: pointer; text-align: center; color: blueviolet; height: 100%;')
-            a.innerHTML = 'Load file'
+        else if(ext == "mp3" || ext == "m4a") {
+            a.setAttribute('style', 'text-align: center;')
+            //let audio = new Audio(process.env.REACT_APP_API_URL + 'api/user/load?token=' + blob)
+           // audio.src = process.env.REACT_APP_API_URL + 'api/user/load?token=' + blob;
+          //  audio.setAttribute('style', 'width: 70px; height: 70px; object-fit: cover; cursor: pointer;')
+            //a.appendChild(`<div style="color: red" onClick="${() => audio.play()}">Play</div>`)
+           // a.appendChild(audio)
+            a.innerHTML = `<audio
+            controls
+            src="${process.env.REACT_APP_API_URL + 'api/user/load?token=' + blob}">
+            <a href="${process.env.REACT_APP_API_URL + 'api/user/load?token=' + blob}">
+                Download audio
+            </a>
+        </audio>`
+        return;
         }
+        else{
+            a.setAttribute('class', 'btn btn-success')
+
+            //a.setAttribute('style', 'cursor: pointer; text-align: center; color: blueviolet; height: 100%;')
+            a.innerHTML = `Загрузить файл`
+        }
+       // a.innerHTML = `Загрузить файл<div id="${file + "_blob"}">${blob}</div>`
        a.onclick = () => {
         window.open(process.env.REACT_APP_API_URL + 'api/user/load?token=' + blob, '_blank')
        }

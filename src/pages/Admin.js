@@ -96,6 +96,7 @@ function AdminComp() {
       loadFile(directory + filesDownloaded[i])
       console.log(directory + filesDownloaded[i])
     };
+    
     if(isFirstLoad) {
       setDirectory(directory)
 		/*if(localStorage.getItem('directory')){
@@ -105,6 +106,7 @@ function AdminComp() {
 		GetDirs(directory)
 		GetFiles(directory)
 		}*/
+    
 		setIsFirstLoad(false)
 	}
 
@@ -115,9 +117,10 @@ function AdminComp() {
     <div>{ isLoading ? 
         <div style={{width : window.innerWidth, height: window.innerHeight, position: "absolute", backgroundColor: 'gray', display: 'flex'}}><span className="loader"></span></div> : ""
       }</div>
-    <Container className="" >
-      <div style={{display: 'flex'}}>
-      <Button style={{marginTop: 5}} className="" variant='outline-success' onClick={() => {
+    <Container className="" style={{border: 'solid', borderWidth: 0.1, borderRadius: 5, borderColor: 'gray', marginTop: 5, backgroundColor: '#2e2e2e', color: 'white'}}>
+      <div style={{border: 'solid', padding: 10, borderRadius: 10, borderWidth: 2, borderColor: 'darkgreen', marginTop: 10, backgroundColor: '#1a1a1a'}}>
+      <div style={{display: 'inline', paddingBottom: 0, overflow: 'hidden'}}>
+      <Button size="sm" style={{marginBottom: 25, display: 'inline'}} className="" variant='outline-success' onClick={() => {
         let tmpDir = directory.split('/')
         console.log(tmpDir)
         tmpDir.pop()
@@ -125,24 +128,26 @@ function AdminComp() {
        // directory.setDir(tmpDir.join('/') + '/');
        if(tmpDir.length > 1)
        setDirectory(tmpDir.join('/') + '/');
-      }}>Back</Button>
-      <a id="label" style={{ fontSize: 20, border: 'solid', marginLeft: 5, borderWidth: 1, borderRadius: 5, padding: 5, paddingRight: 15, marginTop: 5, borderColor: "green", opacity: 0.8}}>Current directory: {directory}</a>
-      <Button id="log_out" style={{marginTop: 5, position: 'fixed', right: 10, top: 0}} className="" variant='outline-success' onClick={() => {
+      }}>Назад</Button>
+      <div id="label" className="no-scroll" style={{ display:'inline-block', overflowX: 'scroll', boxSizing: 'content-box',  overflowY: 'hidden', whiteSpace: 'nowrap', width: window.innerWidth / 3, fontSize: 13, border: 'solid', marginLeft: 5, marginBottom: 1, borderWidth: 1, borderRadius: 5, padding: 5, borderColor: "green", opacity: 0.8 }}>Текущее местоположение: {directory}</div>
+      
+      <Button id="log_out" style={{marginTop: 0, float: 'right'}} size="sm" className="" variant='outline-success' onClick={() => {
         localStorage.setItem('token', null)
         user.setUser(null)
       user.setIsAuth(false)
-      }}>Log out</Button>
+      }}>Выход</Button>
       </div>
-      <div style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap', width: '100%'}}>
-             <a style={{display: 'flex', marginTop: 10, }}> <input id="dir_input" style={{marginLeft: 0, marginRight: 10, marginTop: 5}} onChange={e => setDir(e.target.value)}/>
-            <Button style={{marginLeft: 10}} className="" variant='outline-success' onClick={() => {
+      <br/>
+      <div style={{display: 'inline'}}>
+             <a style={{ marginTop: 0 }}> <input id="dir_input" placeholder="Введите название папки" style={{padding: 3, borderRadius: 7, borderWidth: 0, marginLeft: 0, marginRight: 10, marginTop: 5, width: window.innerWidth / 2.5}} onChange={e => setDir(e.target.value)}/>
+            <Button size="sm" style={{marginTop: -3}} className="" variant='outline-success' onClick={() => {
               console.log('dir')
               console.log(dir)
               if(dir != '' && dir != null)
                 CreateDir(directory + dir)
               document.getElementById('dir_input').value = ''
               setDir('')
-              }}>Create Dir</Button>
+              }}>Создать папку</Button>
 
 
             </a>
@@ -153,27 +158,28 @@ function AdminComp() {
             
         <Form className="mt-3" onSubmit={ e => {e.preventDefault(); UploadFiles(files, directory); setFiles(""); document.getElementById('input_id').value = ""}} >
             
-          <Form.Control style={{display: 'inline-block', width: '50%'}} id="input_id" type="file" multiple="multiple" onChange={e => {
+          <Form.Control size="sm" style={{display: 'inline-block', width: '50%'}} id="input_id" type="file" multiple="multiple" onChange={e => {
               let arr = []
               for(let i = 0; i < e.target.files.length; i++) {
                 arr.push(e.target.files[i])
               }
               setFiles(arr)
             }} placeholder='Choose files'/>
-            <Button style={{marginLeft: 10, marginTop: -4}} className="" type="submit" variant='outline-success' >Upload</Button>
+            <Button size="sm" style={{marginLeft: 10, marginBottom: 2, height: 30}} className="" type="submit" variant='outline-success' >Загрузить</Button>
             
             </Form>
+            </div> 
             <Row xs={1} md={3} className="mt-2">{filesDownloaded == '' ? '' : filesDownloaded.map((file) => 
             
-            	<Card key={file} className="m-2" style={{maxWidth: 300, height: 100, maxHeight: 100}}>
+            	<Card key={file} className="m-2" style={{maxWidth: (window.innerWidth > 285 ? 285 : window.innerWidth), height: 100, maxHeight: 100, backgroundColor: '#5af1', border: 'solid', borderColor: 'green', borderWidth: 1}}>
 					<div id={file} 
 						style={{cursor: '', color: 'green', backgroundColor: '', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', height: 50}} 
 						onClick={() => /*LoadFile(file)*/''}>
 							{file}
 					</div>
 					<a id={file + '_id'} style={{paddingLeft: 0}}>
-						Load
-					</a>
+						Загрузить
+					</a> 
 				</Card>
             
             )}
@@ -181,12 +187,12 @@ function AdminComp() {
           { /* <Button className="mt-2" variant='outline-success' onClick={GetFiles}>Download</Button>*/}
             
 
-            <table style={{width: 400}}><tbody><tr><th>Folder</th><th>Action</th></tr>{dirs == '' ? '' : dirs.map((d) => <tr key={d}>
+            <table style={{width: 280}}><tbody><tr><th>Папка</th><th style={{textAlign: 'center'}}>Действие</th></tr>{dirs == '' ? '' : dirs.map((d) => <tr key={d}>
 				<td id={directory + d + "/"} 
-					style={{color: 'blueviolet', padding: 5, paddingLeft: 0}}>
+					style={{color: 'blueviolet', padding: 5, paddingLeft: 0, opacity: 0.8}}>
 						<div 
-							style={{width: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: "nowrap"}}
-							className="btn btn-info"
+							style={{width: 150, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: "nowrap", color: 'white', backgroundColor: '#3b4cff'}}
+							className="btn "
 							//style={{cursor: 'pointer', color: 'blueviolet', backgroundColor: 'lightgrey', padding: 5, borderRadius: 5}}
 							onClick={() => {setDirectory(directory + d + "/");}}
 						>
@@ -194,11 +200,11 @@ function AdminComp() {
 						</div>
 				</td>
 				<td id={d + '_id'}
-					style={{ textAlign: 'left', alignItems: 'center', padding: 5, paddingLeft: 0}} 
+					style={{ textAlign: 'right', alignItems: 'center', padding: 5, paddingLeft: 0}} 
 				>
 							<div 
               					className="btn btn-danger"
-								style={{display : (filesDownloaded != "" ? (filesDownloaded.filter(file => getFileExtension(file) == d).length > 0 ? "none" : '') : "")}}
+								style={{display : (filesDownloaded != "" ? (filesDownloaded.filter(file => getFileExtension(file) == d).length > 0 ? "none" : '') : ""), width: 100, textOverflow: 'ellipsis', whiteSpace: "nowrap", overflow: 'hidden', maxWidth: window.innerWidth / 4}}
 								//style={{ cursor: 'pointer', color: 'red', backgroundColor: "pink", textAlign: 'center', borderRadius: 5, padding: 5}} 
 								onClick={() => {
 									let result = window.confirm('Delete folder?')
@@ -206,7 +212,7 @@ function AdminComp() {
 										RemoveDir(directory + d + "/")
 								}}
 							>
-								Delete folder
+								Удалить
 							</div>
 				</td>
             </tr>)}

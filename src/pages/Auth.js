@@ -39,20 +39,20 @@ function AuthComp() {
     style={{height: window.innerHeight - 54}}
     >
     <Card style={{width: 600}} className="p-5">
-      <h2 className="m-auto">{isLogin ? "Authorization" : 'Registration'}</h2>
+      <h2 className="m-auto">{isLogin ? "Вход" : 'Регистрация'}</h2>
       <Form className="d-flex flex-column">
-        <FormControl placeholder="Enter email" className="mt-3" value={email} onChange={e => setEmail(e.target.value)}/>
-        <FormControl placeholder="Enter password" className="mt-3" value={password} onChange={e => setPassword(e.target.value)} type='password'/>
+        <FormControl placeholder="Введите имя репозитория" className="mt-3" value={email} onChange={e => setEmail(e.target.value)}/>
+        <FormControl placeholder="Введите пароль" className="mt-3" value={password} onChange={e => setPassword(e.target.value)} type='password'/>
         {isLogin ?
         <><div>
-          No accaunt? <NavLink to={REGISTRATION_ROUTE}>Register</NavLink>
+          Нет репозитория? <NavLink to={REGISTRATION_ROUTE}>Регистрация</NavLink>
         </div>
-        <Button className="mt-3 align-self-end" variant={"outline-success"} onClick={signClick}>Enter</Button></>
+        <Button className="mt-3 align-self-end" variant={"outline-success"} onClick={signClick}>Войти</Button></>
         :
         <><div>
-          Have accaunt? <NavLink to={LOGIN_ROUTE}>Enter</NavLink>
+          Уже есть репозиторий? <NavLink to={LOGIN_ROUTE}>Войти</NavLink>
         </div>
-        <Button className="mt-3 align-self-end" variant={"outline-success"} onClick={signClick}>Register</Button></>
+        <Button className="mt-3 align-self-end" variant={"outline-success"} onClick={signClick}>Регистрация</Button></>
 }
         
       </Form>
