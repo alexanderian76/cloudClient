@@ -1,5 +1,5 @@
 import { set } from "mobx";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Container, Button, Form, Card, CardGroup, Row, Col, Alert, Table } from "react-bootstrap";
 import { Context } from "../index";
 import {createDir, getDirs, getFiles, loadFile, removeDir, uploadFile} from "../http/userAPI"
@@ -17,6 +17,8 @@ function AdminComp() {
   const [isLoading, setIsLoading] = useState(false)
   const [isFirstLoad, setIsFirstLoad] = useState(true)
 
+  const formRef = useRef()
+
   const [directory, setDirectoryState] = useState('/' + user.User.email + '/')
 
   async function setDirectory(dirName) {
@@ -31,15 +33,20 @@ function AdminComp() {
   
 
   async function UploadFiles(files, path) {
-    setIsLoading(true)
-    console.log(path)
-   // const sleep = ms => new Promise(r => setTimeout(r, ms));
-   // await sleep(3000)
-    await uploadFile(files, path)
-    
-    setDirectory(directory)
-    setIsLoading(false)
-    console.log("LOADED")
+    if(files != null && files.length > 0) {
+      setIsLoading(true)
+      console.log(path)
+      // const sleep = ms => new Promise(r => setTimeout(r, ms));
+      // await sleep(3000)
+      await uploadFile(files, path)
+
+      setDirectory(directory)
+      setIsLoading(false)
+      console.log("LOADED")
+    }
+    else {
+      alert("Please choose files to load")
+    }
   }
 
   async function GetFiles(dirName) {
@@ -156,9 +163,9 @@ function AdminComp() {
       
             </div>
             
-        <Form className="mt-3" onSubmit={ e => {e.preventDefault(); UploadFiles(files, directory); setFiles(""); document.getElementById('input_id').value = ""}} >
+        <Form  className="mt-3" onSubmit={ e => {e.preventDefault(); UploadFiles(files, directory); setFiles(""); document.getElementById('input_id').value = ""}} >
             
-          <Form.Control size="sm" style={{display: 'inline-block', width: '50%'}} id="input_id" type="file" multiple="multiple" onChange={e => {
+          <Form.Control ref={formRef} size="sm" style={{display: 'inline-block', width: '50%'}} id="input_id" type="file" multiple="multiple" onChange={e => {
               let arr = []
               for(let i = 0; i < e.target.files.length; i++) {
                 arr.push(e.target.files[i])
@@ -166,7 +173,7 @@ function AdminComp() {
               setFiles(arr)
             }} placeholder='Choose files'/>
             <Button size="sm" style={{marginLeft: 10, marginBottom: 2, height: 30}} className="" type="submit" variant='outline-success' >Загрузить</Button>
-            
+            <Button size="sm" style={{marginLeft: 10, marginBottom: 2, height: 30}} className="" onClick={ () => {formRef.current.value=[]; setFiles(""); console.log(formRef.current);}} variant='outline-success' >Очистить</Button>
             </Form>
             </div> 
             <Row xs={1} md={3} className="mt-2">{filesDownloaded == '' ? '' : filesDownloaded.map((file) => 
